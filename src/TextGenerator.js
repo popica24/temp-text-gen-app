@@ -15,8 +15,7 @@ export default function GenerateText({
       document.getElementById("document_input_1"),
       document.getElementById("document_input_2"),
       document.getElementById("document_input_3"),
-      document.getElementById("document_input_4"),
-      document.getElementById("document_input_5")
+      document.getElementById("document_input_4")
     ];
   
     const interval = setInterval(() => {
@@ -57,8 +56,6 @@ document.getElementById("document_2").click()
 document.getElementById("document_3").click()
 
 document.getElementById("document_4").click()
-
-document.getElementById("document_5").click()
 
 waitForFilesAndValidate()
 
