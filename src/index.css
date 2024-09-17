@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body,html{
+  background-color: #2e2e2e;
+  color: white;
+}
+input{
+  color: #2e2e2e;
+  padding-left: 1rem;
+  border: #c4c4c4 solid 3px;
+}
+input:focus-within{
+  border: #000000 solid 3px;
+  
+}
