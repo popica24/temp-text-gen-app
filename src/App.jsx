@@ -211,6 +211,10 @@ function App() {
           <TextInput
             {...register("Judet", {
               required: "Acest câmp este obligatoriu",
+              pattern: {
+                value: /^[a-zA-Z\s]+$/,
+                message: "Doar litere, fara diacritice",
+              },
             })}
             label="Judetul din buletin"
             description="Judetul din buletin corespondent proiectului depus"
