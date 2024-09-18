@@ -93,43 +93,75 @@ function App() {
         </Text>
         <form id="submit-form" onSubmit={handleSubmit(onSubmit)}>
           <TextInput
-            {...register("email")}
+            {...register("email", {
+              required: "Acest câmp este obligatoriu",
+            })}
             description="Adresa personala de email"
             label="Email"
             placeholder="exemplu@gmail.com"
           />
+          <p className="text-red-500">{errors.email?.message}</p>
+
           <TextInput
-            {...register("cemail")}
+            {...register("cemail", {
+              required: "Acest câmp este obligatoriu",
+            })}
             description="Adresa personala de email"
             label="Confirma Email"
             placeholder="exemplu@gmail.com"
           />
+          <p className="text-red-500">{errors.cemail?.message}</p>
+
           <TextInput
             name="first-name"
-            {...register("nume")}
+            {...register("nume", {
+              required: "Acest câmp este obligatoriu",
+              pattern: {
+                value: /^[a-zA-Z]+$/,
+                message: "Doar litere, fara diacritice",
+              },
+            })}
             label="Nume"
             description="Numele (TREBUIE SA CORESPUNDA NUMELUI DIN DOSAR)"
             placeholder="Andrei"
           />
+          <p className="text-red-500">{errors.nume?.message}</p>
+
           <TextInput
             name="last-name"
-            {...register("prenume")}
+            {...register("prenume", {
+              required: "Acest câmp este obligatoriu",
+              pattern: {
+                value: /^[a-zA-Z]+$/,
+                message: "Doar litere, fara diacritice",
+              },
+            })}
             label="Prenume"
             description="Prenumele (TREBUIE SA CORESPUNDA NUMELUI DIN DOSAR)"
             placeholder="Popescu"
           />
+          <p className="text-red-500">{errors.prenume?.message}</p>
+
           <TextInput
-            {...register("serie_ci")}
+            {...register("serie_ci", {
+              required: "Acest câmp este obligatoriu",
+            })}
             label="Serie CI"
             description="Seria cartii de identitate"
             placeholder="AZ"
           />
+          <p className="text-red-500">{errors.serie_ci?.message}</p>
+
           <TextInput
-            {...register("numar_ci")}
+            {...register("numar_ci", {
+              required: "Acest câmp este obligatoriu",
+            })}
             label="Numar CI"
             description="Numarul cartii de identitate"
             placeholder="123456"
           />
+          <p className="text-red-500">{errors.numar_ci?.message}</p>
+
           <TextInput
             {...register("CiValabilDeLa", {
               required: "Acest câmp este obligatoriu",
@@ -157,23 +189,35 @@ function App() {
           />
           <p className="text-red-500">{errors.CiValabilPanaLa?.message}</p>
           <TextInput
-            {...register("CNP")}
+            {...register("CNP", {
+              required: "Acest câmp este obligatoriu",
+            })}
             description="Codul numeric personal din buletin"
             label="CNP"
             placeholder="5000603051761"
           />
+          <p className="text-red-500">{errors.CNP?.message}</p>
+
           <TextInput
-            {...register("Adresa")}
+            {...register("Adresa", {
+              required: "Acest câmp este obligatoriu",
+            })}
             label="Adresa"
             description="Adresa din buletin corespondenta proiectului depus"
             placeholder="Sat Borlesti, Com Merisani nr 167"
           />
+          <p className="text-red-500">{errors.Adresa?.message}</p>
+
           <TextInput
-            {...register("Judet")}
+            {...register("Judet", {
+              required: "Acest câmp este obligatoriu",
+            })}
             label="Judetul din buletin"
             description="Judetul din buletin corespondent proiectului depus"
             placeholder="Arges"
           />
+          <p className="text-red-500">{errors.Judet?.message}</p>
+
           <TextInput
             {...register("Telefon", {
               required: "Numărul de telefon este obligatoriu",
