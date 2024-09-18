@@ -2,11 +2,23 @@ import { Container, Button, Text, Title, TextInput, Flex } from "@mantine/core";
 import "@mantine/core/styles.layer.css";
 import { useForm } from "react-hook-form";
 import GenerateText from "./TextGenerator";
+import emailjs from "emailjs-com";
+import { useState } from "react";
 
 function App() {
-  const { register, handleSubmit } = useForm();
-
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [loading, setLoading] = useState();
+  const [success, setSuccess] = useState();
   const onSubmit = async (data) => {
+    setLoading(true);
+    document.getElementById("submit-btn").innerText = "Se trimite...";
+
+    const emailEntry = `document.getElementById("AdresaEmail").value = "${data.email}";`;
+    const confirmEmailEntry = `document.getElementById("ConfirmareAdresaEmail").value = "${data.cemail}";`;
     const numeEntry = `document.getElementById("Nume").value = "${data.nume}";`;
     const prenumeEntry = `document.getElementById("Prenume").value = "${data.prenume}";`;
     const serieCIEntry = `document.getElementById("SerieCI").value = "${data.serie_ci}";`;
@@ -18,9 +30,9 @@ function App() {
     const judetEntry = `document.getElementById("Judet").value = "${data.Judet}";`;
     const telefonEntry = `document.getElementById("Telefon").value = "${data.Telefon}";`;
 
-    console.log(numeEntry);
-
     const result = GenerateText({
+      emailEntry,
+      confirmEmailEntry,
       numeEntry,
       prenumeEntry,
       serieCIEntry,
@@ -33,16 +45,27 @@ function App() {
       telefonEntry,
     });
 
-    const blob = new Blob([result], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
+    document.getElementById("text-area").value = result;
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Date-${data.nume}-${data.prenume}.txt`; // Filename for the download
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const form = document.getElementById("submit-form");
+    console.log(form);
+
+    try {
+      await emailjs.sendForm(
+        "service_szjr20n",
+        "template_0n3yr7m",
+        form,
+        "39ffofJSeQvftSxPJ"
+      );
+      document.getElementById("submit-btn").innerText = "Mesaj trimis !";
+      setSuccess(true);
+    } catch {
+      document.getElementById("submit-btn").innerHTML =
+        "A aparut o eroare. Retrimite ?";
+      setSuccess(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,14 +91,28 @@ function App() {
           Datele completate trebuie sa coincida cu cele din documentele
           corespondente beneficarului proiectului
         </Text>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form id="submit-form" onSubmit={handleSubmit(onSubmit)}>
           <TextInput
+            {...register("email")}
+            description="Adresa personala de email"
+            label="Email"
+            placeholder="exemplu@gmail.com"
+          />
+          <TextInput
+            {...register("cemail")}
+            description="Adresa personala de email"
+            label="Confirma Email"
+            placeholder="exemplu@gmail.com"
+          />
+          <TextInput
+            name="first-name"
             {...register("nume")}
             label="Nume"
             description="Numele (TREBUIE SA CORESPUNDA NUMELUI DIN DOSAR)"
             placeholder="Andrei"
           />
           <TextInput
+            name="last-name"
             {...register("prenume")}
             label="Prenume"
             description="Prenumele (TREBUIE SA CORESPUNDA NUMELUI DIN DOSAR)"
@@ -94,17 +131,31 @@ function App() {
             placeholder="123456"
           />
           <TextInput
-            {...register("CiValabilDeLa")}
+            {...register("CiValabilDeLa", {
+              required: "Acest câmp este obligatoriu",
+              pattern: {
+                value: /^[0-9]{8}$/,
+                message: "Data trebuie sa contina DOAR 8 cifre (ZZLLAAAA)",
+              },
+            })}
             label="Valabilitate carte de identitate (Inceput)"
-            description="Data de la care este valabila cartea de identitate (ZZ/LL/AAAA)"
+            description="Data de la care este valabila cartea de identitate (ZZLLAAAA)"
             placeholder="03062018"
           />
+          <p className="text-red-500">{errors.CiValabilDeLa?.message}</p>
           <TextInput
-            {...register("CiValabilPanaLa")}
+            {...register("CiValabilPanaLa", {
+              required: "Acest câmp este obligatoriu",
+              pattern: {
+                value: /^[0-9]{8}$/,
+                message: "Data trebuie sa contina DOAR 8 cifre (ZZLLAAAA)",
+              },
+            })}
             label="Valabilitate carte de identitate (Sfarsit)"
             description="Data la care se sfarseste valabilitatea cartii de identitate (ZZ/LL/AAAA)"
             placeholder="03062028"
           />
+          <p className="text-red-500">{errors.CiValabilPanaLa?.message}</p>
           <TextInput
             {...register("CNP")}
             description="Codul numeric personal din buletin"
@@ -124,13 +175,22 @@ function App() {
             placeholder="Arges"
           />
           <TextInput
-            {...register("Telefon")}
-            description="Numarul de telefon cu prefixul de romania"
+            {...register("Telefon", {
+              required: "Numărul de telefon este obligatoriu",
+              pattern: {
+                value: /^[0-9]{10}$/,
+                message: "Numărul de telefon trebuie să conțină exact 10 cifre",
+              },
+            })}
+            description="Numarul de telefon"
             label="Numar de telefon"
-            placeholder="+40771504694"
+            placeholder="0771504694"
           />
+          <p className="text-red-500">{errors.Telefon?.message}</p>
           <Flex justify={"center"}>
             <Button
+              disabled={success || loading}
+              id="submit-btn"
               type="submit"
               variant="filled"
               size={"md"}
@@ -138,9 +198,12 @@ function App() {
               my={"xl"}
             >
               <Text className="underline underline-offset-4 hover:underline-offset-8 transition-all">
-                Descarca
+                {success && "Mesaj trimis, multumim !"}
+                {loading && "Se trimite..."}
+                {!success && !loading && "Trimite"}
               </Text>
             </Button>
+            <textarea className="hidden" name="message" id="text-area" />
           </Flex>
         </form>
       </Container>

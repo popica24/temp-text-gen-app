@@ -1,4 +1,6 @@
 export default function GenerateText({
+    emailEntry,
+    confirmEmailEntry,
     numeEntry,
     prenumeEntry,
     serieCIEntry,
@@ -10,7 +12,9 @@ export default function GenerateText({
     judetEntry,
     telefonEntry
   }) {
-    return `function waitForFilesAndValidate() {
+    return `
+    
+    function waitForFilesAndValidate() {
     const fileInputs = [
       document.getElementById("document_input_1"),
       document.getElementById("document_input_2"),
@@ -28,8 +32,9 @@ export default function GenerateText({
     }, 500); 
   }
 
-document.getElementById("AdresaEmail").value = "stoicatibi3@gmail.com"
-document.getElementById("ConfirmareAdresaEmail").value = "stoicatibi3@gmail.com"
+${emailEntry}
+${confirmEmailEntry}
+
 setTimeout(function(){ 
     document.getElementById("validate-step1").click() 
 }, 100);
@@ -67,5 +72,5 @@ document.getElementById("CheckDeAcord3").checked = true;
 document.getElementById("CheckDeAcord").checked = true;    
 $("#validate-step4").prop('disabled', false);
 })`
-  }
+}
   
