@@ -117,7 +117,7 @@ function App() {
             {...register("nume", {
               required: "Acest câmp este obligatoriu",
               pattern: {
-                value: /^[a-zA-Z]+$/,
+                value: /^[a-zA-Z\s]+$/,
                 message: "Doar litere, fara diacritice",
               },
             })}
@@ -132,7 +132,7 @@ function App() {
             {...register("prenume", {
               required: "Acest câmp este obligatoriu",
               pattern: {
-                value: /^[a-zA-Z]+$/,
+                value: /^[a-zA-Z\s]+$/,
                 message: "Doar litere, fara diacritice",
               },
             })}
